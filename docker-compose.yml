@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  server1:
+    image: server1
+    container_name: server1
+    networks:
+      vmbr1:
+    ports:
+      - 12345:12345
+    environment:
+      - PORT=12345
+    tty: true
+
+  server2:
+    image: server2
+    container_name: server2
+    networks:
+      vmbr1:
+    ports:
+      - 12346:12346
+    environment:
+      - PORT=12346
+    tty: true
+
+  client1:
+    image: client1
+    container_name: client1
+    networks:
+      vmbr1:
+    depends_on:
+      - server1
+      - server2
+    environment:
+      - HOST_SERVER_1=server1
+      - HOST_SERVER_2=server2
+    stdin_open: true
+    tty: true
+  
+  client2:
+    image: client2
+    container_name: client2
+    networks:
+      vmbr1:
+    depends_on:
+      - server1
+      - server2
+    environment:
+      - HOST_SERVER_1=server1
+      - HOST_SERVER_2=server2
+    stdin_open: true
+    tty: true
+
+networks:
+  vmbr1:
+    driver: bridge
